@@ -1,25 +1,22 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from 'react';
+import RuleForm from './components/RuleForm';
+import ResultsDisplay from './components/ResultDisplay';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
-}
+const App = () => {
+    const [result, setResult] = useState(null); // State to hold the result
+
+    // Function to handle evaluation and update result
+    const handleEvaluate = (evaluationResult) => {
+        setResult(evaluationResult);
+    };
+
+    return (
+        <div style={{ padding: '16px' }}>
+            <h1>Rule Engine App</h1>
+            <RuleForm onEvaluate={handleEvaluate} />
+            <ResultsDisplay result={result} />
+        </div>
+    );
+};
 
 export default App;
