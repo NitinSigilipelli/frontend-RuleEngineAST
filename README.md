@@ -21,7 +21,7 @@ This is a React-based Rule Engine application that allows users to create, combi
 1. Clone the repository:
 
    ```bash
-   git clone https://github.com/your-username/rule-engine-app.git
+   git clone https://github.com/NitinSigilipelli/frontend-RuleEngineAST.git
    ```
 2. Move to frontend Directory
    ```bash
