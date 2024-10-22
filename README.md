@@ -14,7 +14,7 @@ This is a React-based Rule Engine application that allows users to create, combi
 
 - **Frontend**: React
 - **HTTP Client**: Axios
-- **Styling**: Tailwind CSS (optional, you can change the styling as per your needs)
+- **Styling**: Tailwind CSS
 
 ## Installation
 
@@ -28,17 +28,17 @@ This is a React-based Rule Engine application that allows users to create, combi
    cd frontend
    ```
 3.Install node modules
-```bash
-npm i
-```
+   ```bash
+   npm i
+   ```
 4.Install axios package
-```bash
-npm i axios
-```
+   ```bash
+   npm i axios
+   ```
 5.Start the application
-```bash
-npm run start
-```
+   ```bash
+   npm run start
+   ```
 ## API Endpoints
 
 The application interacts with the following API endpoints:
