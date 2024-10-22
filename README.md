@@ -1,4 +1,4 @@
-# Rule Engine Application
+# Rule Engine Application(Frontend)
 
 This is a React-based Rule Engine application that allows users to create, combine, and evaluate rules based on user data. The application interacts with a backend API for rule management.
 
