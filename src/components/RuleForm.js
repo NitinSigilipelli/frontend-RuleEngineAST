@@ -239,6 +239,13 @@ const RuleForm = ({ onEvaluate }) => {
                     <h4 className="text-lg font-semibold text-gray-700 mb-4">User Data</h4>
                     <input
                         type="text"
+                        placeholder="Enter rule to evaluate"
+                        value={rule}
+                        onChange={(e) => setRule(e.target.value)}
+                        className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 mb-4"
+                    />
+                    <input
+                        type="text"
                         placeholder="Age"
                         name="age"
                         value={userData.age}
