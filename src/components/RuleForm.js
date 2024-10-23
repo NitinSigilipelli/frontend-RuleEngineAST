@@ -60,6 +60,7 @@ const RuleForm = ({ onEvaluate }) => {
             setLoading(false);
         }
     };
+
     const handleCombine = async () => {
         setLoading(true);
         setError(null); // Reset error before the request
@@ -71,14 +72,12 @@ const RuleForm = ({ onEvaluate }) => {
             // Store the response data for display
             setEvaluationResult(response.data);
             setSubmittedData({ type: 'Combined Rules', combinedRules, combineOperator, response: response.data }); // Store combined rules and response
-            console.log('Combine Rules Response:', response.data);
         } catch (error) {
             handleError(error, 'combining the rules');
         } finally {
             setLoading(false);
         }
     };
-
 
     const handleEvaluate = async () => {
         setLoading(true);
@@ -88,9 +87,17 @@ const RuleForm = ({ onEvaluate }) => {
                 ruleString: rule,
                 userData: Object.values(userData),
             });
-            setEvaluationResult(response.data.result);
+
+            // Log the entire response to inspect its structure
+            console.log('Evaluation Response:', response);
+
+            // Check if `response.data.result` exists, else use the entire `response.data`
+            const result = response.data.result ? response.data.result : response.data;
+            
+            // Set the evaluation result
+            setEvaluationResult(result);
             setSubmittedData({ type: 'Rule Evaluation', userData, rule }); // Store user data and rule for display
-            onEvaluate(response.data.result);
+            onEvaluate(result);
         } catch (error) {
             handleError(error, 'evaluating the rule');
         } finally {
@@ -113,15 +120,19 @@ const RuleForm = ({ onEvaluate }) => {
     };
 
     const renderEvaluationResult = () => {
-        if (!evaluationResult) return null;
+        if (evaluationResult === null) return null;
+    
         return (
             <div className="mt-6 p-4 bg-gray-100 rounded-lg">
                 <h4 className="text-xl font-semibold text-gray-800">Result:</h4>
-                <pre className="text-gray-700 mt-2 whitespace-pre-wrap">{JSON.stringify(evaluationResult, null, 2)}</pre>
+                {evaluationResult === true ? (
+                    <p className="text-green-700 mt-2"> <strong>True</strong></p>
+                ) : (
+                    <p className="text-red-700 mt-2"><strong>False</strong></p>
+                )}
             </div>
         );
-    };
-
+    };  
     const renderSubmittedData = () => {
         if (!submittedData) return null;
 
@@ -219,14 +230,15 @@ const RuleForm = ({ onEvaluate }) => {
                         id="operator-select"
                         value={combineOperator}
                         onChange={(e) => setCombineOperator(e.target.value)}
-                        className="w-full border border-gray-300 p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 mb-4"
+                        className="w-full border border-gray-300 p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                     >
                         <option value="AND">AND</option>
                         <option value="OR">OR</option>
                     </select>
                     <button
+                        type="button"
                         onClick={handleCombine}
-                        className={`w-full py-3 text-white font-semibold rounded-lg transition duration-200 ${loading ? 'bg-gray-400' : 'bg-blue-500 hover:bg-blue-600'}`}
+                        className={`w-full mt-4 py-3 text-white font-semibold rounded-lg transition duration-200 ${loading ? 'bg-gray-400' : 'bg-blue-500 hover:bg-blue-600'}`}
                         disabled={loading}
                     >
                         {loading ? 'Combining...' : 'Combine Rules'}
@@ -235,65 +247,52 @@ const RuleForm = ({ onEvaluate }) => {
             )}
 
             {selectedAction === 'evaluate' && (
-                <>
-                    <h4 className="text-lg font-semibold text-gray-700 mb-4">User Data</h4>
+                <div className="mb-6">
+                    <h4 className="text-lg font-semibold text-gray-700 mb-4">Evaluate Rule</h4>
                     <input
                         type="text"
-                        placeholder="Enter rule to evaluate"
+                        placeholder="Enter rule"
                         value={rule}
                         onChange={(e) => setRule(e.target.value)}
                         className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 mb-4"
                     />
-                    <input
-                        type="text"
-                        placeholder="Age"
-                        name="age"
-                        value={userData.age}
-                        onChange={handleInputChange}
-                        className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 mb-4"
-                    />
-                    <input
-                        type="text"
-                        placeholder="Department"
-                        name="department"
-                        value={userData.department}
-                        onChange={handleInputChange}
-                        className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 mb-4"
-                    />
-                    <input
-                        type="text"
-                        placeholder="Salary"
-                        name="salary"
-                        value={userData.salary}
-                        onChange={handleInputChange}
-                        className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 mb-4"
-                    />
-                    <input
-                        type="text"
-                        placeholder="Experience"
-                        name="experience"
-                        value={userData.experience}
-                        onChange={handleInputChange}
-                        className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 mb-6"
-                    />
+                    <div className="grid grid-cols-2 gap-4">
+                        {['age', 'department', 'salary', 'experience'].map((field) => (
+                            <div key={field} className="mb-4">
+                                <label className="block text-gray-700 text-sm font-bold mb-2 capitalize" htmlFor={field}>
+                                    {field}
+                                </label>
+                                <input
+                                    type="text"
+                                    id={field}
+                                    name={field}
+                                    value={userData[field]}
+                                    onChange={handleInputChange}
+                                    placeholder={`Enter ${field}`}
+                                    className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                />
+                            </div>
+                        ))}
+                    </div>
                     <button
+                        type="button"
                         onClick={handleEvaluate}
-                        className={`w-full py-3 text-white font-semibold rounded-lg transition duration-200 ${loading ? 'bg-gray-400' : 'bg-green-500 hover:bg-green-600'}`}
+                        className={`w-full py-3 text-white font-semibold rounded-lg transition duration-200 ${loading ? 'bg-gray-400' : 'bg-blue-500 hover:bg-blue-600'}`}
                         disabled={loading}
                     >
                         {loading ? 'Evaluating...' : 'Evaluate Rule'}
                     </button>
-                </>
+                </div>
             )}
 
-            {/* Display error if any */}
-            {renderError()}
-
-            {/* Display evaluation result */}
+            {/* Display evaluation results */}
             {renderEvaluationResult()}
 
-            {/* Render the submitted data */}
+            {/* Display submitted data */}
             {renderSubmittedData()}
+
+            {/* Display errors if any */}
+            {renderError()}
         </div>
     );
 };
