@@ -125,14 +125,20 @@ const RuleForm = ({ onEvaluate }) => {
         return (
             <div className="mt-6 p-4 bg-gray-100 rounded-lg">
                 <h4 className="text-xl font-semibold text-gray-800">Result:</h4>
-                {evaluationResult === true ? (
-                    <p className="text-green-700 mt-2"> <strong>True</strong></p>
+                {typeof evaluationResult === 'boolean' ? (
+                    <p className={evaluationResult ? "text-green-700 mt-2" : "text-red-700 mt-2"}>
+                        <strong>{evaluationResult ? 'True' : 'False'}</strong>
+                    </p>
                 ) : (
-                    <p className="text-red-700 mt-2"><strong>False</strong></p>
+                    <pre className="text-gray-700 mt-2 whitespace-pre-wrap">
+                        {JSON.stringify(evaluationResult, null, 2)}
+                    </pre>
                 )}
             </div>
         );
-    };  
+    };
+    
+
     const renderSubmittedData = () => {
         if (!submittedData) return null;
 
